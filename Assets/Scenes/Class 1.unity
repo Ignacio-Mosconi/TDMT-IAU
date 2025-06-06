@@ -153,11 +153,15 @@ MonoBehaviour:
     lowerLeftLimit: {fileID: 1874982071}
     upperRightLimit: {fileID: 1201502091}
     nodesSeparation: 1
-    walkableTag: Terrain
+    terrainLayers:
+    - tag: Grass
+      costMultiplier: 1
+    - tag: Mud
+      costMultiplier: 10
     ignoreLayers:
       serializedVersion: 2
       m_Bits: 8
-  pathfindingStrategy: 0
+  pathfindingStrategy: 3
 --- !u!4 &159039882
 Transform:
   m_ObjectHideFlags: 0

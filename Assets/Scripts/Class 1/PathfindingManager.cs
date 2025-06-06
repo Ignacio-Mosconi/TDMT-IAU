@@ -7,12 +7,14 @@ namespace Class1
     {
         public enum PathfindingStrategy
         {
-            BreathFirst,
-            DepthFirst
+            BreadthFirst,
+            DepthFirst,
+            Dijkstra,
+            AStar
         }
 
         [SerializeField] private PathGenerator pathGenerator = new PathGenerator();
-        [SerializeField] private PathfindingStrategy pathfindingStrategy = PathfindingStrategy.BreathFirst;
+        [SerializeField] private PathfindingStrategy pathfindingStrategy = PathfindingStrategy.BreadthFirst;
 
         private List<PathNode> pathNodes;
         private List<PathNode> openNodes;
@@ -69,7 +71,7 @@ namespace Class1
             return closestNode;
         }
 
-        private PathNode GetNextOpenNode ()
+        private PathNode GetNextOpenNode (PathNode destinationNode)
         {
             if (openNodes.Count == 0)
                 return null;
@@ -78,12 +80,20 @@ namespace Class1
 
             switch (pathfindingStrategy)
             {
-                case PathfindingStrategy.BreathFirst:
-                    openNode = openNodes[0];
+                case PathfindingStrategy.BreadthFirst:
+                    openNode = GetNextOpenNodeBreadthFirst();
                     break;
                 
                 case PathfindingStrategy.DepthFirst:
-                    openNode = openNodes[^1];
+                    openNode = GetNextOpenNodeDepthFirst();
+                    break;
+
+                case PathfindingStrategy.Dijkstra:
+                    openNode = GetNextOpenNodeDijkstra();
+                    break;
+                
+                case PathfindingStrategy.AStar:
+                    openNode = GetNextOpenNodeAStar(destinationNode);
                     break;
             }
 
@@ -109,14 +119,23 @@ namespace Class1
             closedNodes.Add(node);
         }
 
-        private void OpenAdjacentNodes (PathNode node)
+        private void OpenAdjacentNodes (PathNode parentNode)
         {
-            foreach (PathNode pathNode in node.AdjacentNodes)
+            foreach (PathNode pathNode in parentNode.AdjacentNodes)
             {
                 if (pathNode.CurrentState != PathNode.State.Unreviewed)
                     continue;
 
-                pathNode.Parent = node;
+                pathNode.Parent = parentNode;
+
+                switch (pathfindingStrategy)
+                {
+                    case PathfindingStrategy.Dijkstra:
+                    case PathfindingStrategy.AStar:
+                        float sqrDistance = (parentNode.Position - pathNode.Position).sqrMagnitude;
+                        pathNode.AccumulatedCost = parentNode.AccumulatedCost + sqrDistance * pathNode.CostMultiplier;
+                        break;
+                }
 
                 OpenNode(pathNode);
             }
@@ -131,13 +150,51 @@ namespace Class1
 
                 pathNode.CurrentState = PathNode.State.Unreviewed;
                 pathNode.Parent = null;
+                pathNode.AccumulatedCost = 0f;
             }
 
             openNodes.Clear();
             closedNodes.Clear();
         }
 
-        private Stack<PathNode> GeneratePath (PathNode originNode, PathNode destinationNode)
+        private PathNode GetNextOpenNodeBreadthFirst () => openNodes[0];
+        
+        private PathNode GetNextOpenNodeDepthFirst () => openNodes[^1];
+
+        private PathNode GetNextOpenNodeDijkstra ()
+        {
+            PathNode openNode = openNodes[0];
+
+            foreach (PathNode pathNode in openNodes)
+            {
+                if (pathNode.AccumulatedCost < openNode.AccumulatedCost)
+                    openNode = pathNode;
+            }
+            
+            return openNode;
+        }
+        
+        private PathNode GetNextOpenNodeAStar (PathNode destinationNode)
+        {
+            PathNode openNode = openNodes[0];
+
+            float closestSqrDistance = (destinationNode.Position - openNode.Position).sqrMagnitude;
+
+            foreach (PathNode pathNode in openNodes)
+            {
+                float sqrDistance = (destinationNode.Position - pathNode.Position).sqrMagnitude;
+
+                if (pathNode.AccumulatedCost <= openNode.AccumulatedCost && sqrDistance < closestSqrDistance)
+                {
+                    openNode = pathNode;
+                    closestSqrDistance = sqrDistance;
+                }
+            }
+            
+            return openNode;
+        }
+
+        private Stack<PathNode> GeneratePath (PathNode destinationNode)
         {
             Stack<PathNode> path = new Stack<PathNode>();
 
@@ -163,10 +220,10 @@ namespace Class1
 
             while (openNodes.Count > 0 && path == null)
             {
-                PathNode openNode = GetNextOpenNode();
+                PathNode openNode = GetNextOpenNode(destinationNode);
 
                 if (openNode == destinationNode)
-                    path = GeneratePath(originNode, destinationNode);
+                    path = GeneratePath(destinationNode);
                 else
                     OpenAdjacentNodes(openNode);
 

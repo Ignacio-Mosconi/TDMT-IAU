@@ -7,10 +7,17 @@ namespace Class1
     [Serializable]
     public class PathGenerator
     {
+        [Serializable]
+        private struct TerrainLayer
+        {
+            public string tag;
+            public float costMultiplier;
+        }
+
         [SerializeField] private Transform lowerLeftLimit;
         [SerializeField] private Transform upperRightLimit;
         [SerializeField, Range(0.1f, 10f)] private float nodesSeparation;
-        [SerializeField] private string walkableTag;
+        [SerializeField] private TerrainLayer[] terrainLayers;
         [SerializeField] private LayerMask ignoreLayers;
 
         
@@ -44,14 +51,20 @@ namespace Class1
 
                     if (Physics.Raycast(rayOrigin, Vector3.down, out hitInfo, raycastHeight, ~ignoreLayers))
                     {
-                        if (hitInfo.collider.CompareTag(walkableTag))
+                        foreach (TerrainLayer terrainLayer in terrainLayers)
                         {
-                            PathNode pathNode = new PathNode()
+                            if (hitInfo.collider.CompareTag(terrainLayer.tag))
                             {
-                                Position = hitInfo.point
-                            };
+                                PathNode pathNode = new PathNode()
+                                {
+                                    Position = hitInfo.point,
+                                    CostMultiplier = terrainLayer.costMultiplier,
+                                    AccumulatedCost = 0f
+                                };
 
-                            nodes.Add(pathNode);
+                                nodes.Add(pathNode);
+                                break;
+                            }
                         }
                     }
                 }
