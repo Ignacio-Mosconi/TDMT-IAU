@@ -160,7 +160,7 @@ MonoBehaviour:
       costMultiplier: 10
     ignoreLayers:
       serializedVersion: 2
-      m_Bits: 8
+      m_Bits: 72
   pathfindingStrategy: 3
 --- !u!4 &159039882
 Transform:

@@ -13,6 +13,7 @@ namespace Class1
         private Vector3? destination;
 
         public bool HasReachedDestination { get; private set; } = false;
+        
         public Vector3? Destination 
         { 
             get => destination;
@@ -28,6 +29,8 @@ namespace Class1
                 }
             }
         }
+
+        public float MovementSpeed { get => movementSpeed; set => movementSpeed = value; }
 
 
         void Update ()
