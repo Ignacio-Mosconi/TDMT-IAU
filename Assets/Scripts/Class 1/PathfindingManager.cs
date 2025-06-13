@@ -21,7 +21,7 @@ namespace Class1
         private List<PathNode> closedNodes;
 
 
-        void Start ()
+        void Awake ()
         {
             if (pathNodes == null)
                 GeneratePath();

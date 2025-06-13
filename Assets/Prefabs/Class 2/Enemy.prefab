@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3865801640494033229}
   - component: {fileID: 790642188305773925}
-  - component: {fileID: 6120590767213784061}
-  m_Layer: 3
-  m_Name: Player
+  - component: {fileID: 2764369558376322417}
+  m_Layer: 7
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a7c7a262b898f94ebad105c9fbf315c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 4
+  movementSpeed: 3
   rotateSpeed: 90
---- !u!114 &6120590767213784061
+--- !u!114 &2764369558376322417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,9 +57,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 969507062849263540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f71696872c76f342b7a83eed3693fae, type: 3}
+  m_Script: {fileID: 11500000, guid: cd15ce05ff35e5a4d934219fdc400cbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wanderState:
+    wanderSpeed: 1
+    searchRadius: 5
+    circleWanderRadius: 3
+    circleSearchPrecision: 32
+  chaseState:
+    chaseSpeed: 2
+    loseTrackRange: 5
+    pathfindingIntervals: 0.5
+  attackTarget: {fileID: 0}
 --- !u!1 &2239061786817805300
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,7 +83,7 @@ GameObject:
   - component: {fileID: 182366010700391839}
   - component: {fileID: 9191990807301078405}
   - component: {fileID: 875505939987624666}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +137,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ab743930414d3943a514a5678802d77, type: 2}
+  - {fileID: 2100000, guid: 22d32f82283db084ebb92a4f5e2b9845, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -211,7 +221,7 @@ GameObject:
   - component: {fileID: 2150997118782932298}
   - component: {fileID: 191004950860230259}
   - component: {fileID: 8382774486527908718}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -264,7 +274,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7ab743930414d3943a514a5678802d77, type: 2}
+  - {fileID: 2100000, guid: 22d32f82283db084ebb92a4f5e2b9845, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

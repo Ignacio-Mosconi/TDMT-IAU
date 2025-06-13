@@ -176,3 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedReductionPerc: 0.5
+  affectedLayers:
+    serializedVersion: 2
+    m_Bits: 8

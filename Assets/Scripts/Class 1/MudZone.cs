@@ -5,13 +5,14 @@ namespace Class1
     public class MudZone : MonoBehaviour
     {
         [SerializeField] private float speedReductionPerc = 0.5f;
+        [SerializeField] private LayerMask affectedLayers;
 
 
         void OnTriggerEnter (Collider other)
         {
             PathNodeAgent agent = other.gameObject.GetComponentInParent<PathNodeAgent>();
 
-            if (agent)
+            if (agent && (affectedLayers.value & agent.gameObject.layer) != 0)
                 agent.MovementSpeed *= speedReductionPerc;
         }
         
@@ -19,7 +20,7 @@ namespace Class1
         {
             PathNodeAgent agent = other.gameObject.GetComponentInParent<PathNodeAgent>();
 
-            if (agent)
+            if (agent && (affectedLayers.value & agent.gameObject.layer) != 0)
                 agent.MovementSpeed /= speedReductionPerc;
         }
     }
